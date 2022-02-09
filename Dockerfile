@@ -114,7 +114,7 @@ RUN set -x && \
         --enable-ldap=mod \
         --enable-lload=mod \
 	--enable-bdb=mod \
-        --enable-hdb=mod
+        --enable-hdb=mod \
         --enable-mdb=mod \
         --enable-meta=mod \
         --enable-modules \
