@@ -31,7 +31,11 @@ RUN set -x && \
                 libtool \
                 m4 \
                 mosquitto-dev \
-                openssl-dev \
+		openldap-back-bdb \
+		openldap-back-ldap \
+		openldap-back-meta \
+		openldap-back-monitor \
+		openldap-back-sql \
                 openssl-dev \
                 unixodbc-dev \
                 util-linux-dev \
@@ -55,6 +59,7 @@ RUN set -x && \
                 unixodbc \
                 xz \
                 zstd \
+		odbc-postgresql \
                 && \
     \
     mkdir -p /usr/src/pixz && \
@@ -108,6 +113,8 @@ RUN set -x && \
         --enable-dynamic \
         --enable-ldap=mod \
         --enable-lload=mod \
+	--enable-bdb=mod \
+        --enable-hdb=mod
         --enable-mdb=mod \
         --enable-meta=mod \
         --enable-modules \
