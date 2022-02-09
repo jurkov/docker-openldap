@@ -31,15 +31,15 @@ RUN set -x && \
                 libtool \
                 m4 \
                 mosquitto-dev \
-		openldap-back-bdb \
-		openldap-back-ldap \
-		openldap-back-meta \
-		openldap-back-monitor \
-		openldap-back-sql \
+				openldap-back-ldap \
+				openldap-back-meta \
+				openldap-back-monitor \
+				openldap-back-sql \
                 openssl-dev \
                 unixodbc-dev \
                 util-linux-dev \
                 xz-dev \
+				libpq-dev \
                 && \
     \
 ### Fetch Runtime Dependencies
@@ -59,7 +59,6 @@ RUN set -x && \
                 unixodbc \
                 xz \
                 zstd \
-		odbc-postgresql \
                 && \
     \
     mkdir -p /usr/src/pixz && \
@@ -72,6 +71,13 @@ RUN set -x && \
     mkdir -p /usr/src/pbzip2 && \
     curl -ssL https://launchpad.net/pbzip2/1.1/1.1.13/+download/pbzip2-1.1.13.tar.gz | tar xfz - --strip=1 -C /usr/src/pbzip2 && \
     cd /usr/src/pbzip2 && \
+    make -j$(getconf _NPROCESSORS_ONLN) && \
+    make install && \
+    \
+	mkdir -p /usr/src/psqlODBC && \
+    curl -ssL https://ftp.postgresql.org/pub/odbc/versions/src/psqlodbc-13.02.0000.tar.gz | tar xfz - --strip=1 -C /usr/src/psqlODBC && \
+    cd /usr/src/psqlODBC && \
+    ./configure && \
     make -j$(getconf _NPROCESSORS_ONLN) && \
     make install && \
     \
@@ -113,7 +119,7 @@ RUN set -x && \
         --enable-dynamic \
         --enable-ldap=mod \
         --enable-lload=mod \
-	--enable-bdb=mod \
+		--enable-bdb=mod \
         --enable-hdb=mod \
         --enable-mdb=mod \
         --enable-meta=mod \
@@ -151,7 +157,7 @@ RUN set -x && \
     make prefix=/usr libexecdir=/usr/lib etcdir=/etc -C contrib/slapd-modules/ppm LDAP_INC_PATH=/tiredofit/openldap:$(head -n 1 /tiredofit/CHANGELOG.md | awk '{print $2'}) && \
     cp /tiredofit/openldap:$(head -n 1 /tiredofit/CHANGELOG.md | awk '{print $2'})/contrib/slapd-modules/ppm/ppm.so /usr/lib/openldap && \
     ### OpenLDAP Setup
-    ln -s /usr/lib/slapd /usr/sbin && \
+    # ln -s /usr/lib/slapd /usr/sbin && \
     mkdir -p /usr/share/doc/openldap && \
     mv /etc/openldap/*.default /usr/share/doc/openldap && \
     rm -rf /etc/openldap/* && \
